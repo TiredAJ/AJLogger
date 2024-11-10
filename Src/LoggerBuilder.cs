@@ -69,7 +69,7 @@ public class LoggerBuilder
     /// <see cref="_ProjectName"/> would be "CerddoPod" and <see cref="_ComponentName"/> would be "SAPlayer". So that log
     /// would look something like "/var/log/CerddoPod/SAPlayer-Log.md".
     /// MUST be used after either <see cref="UseDefaultLoc"/> or <see cref="SetLogLocation"/>, otherwise <see cref="UseDefaultLoc"/>
-    /// will be used. This will also be the name of the logger in <see cref="Loggers"/> (e.g. "CerddoPod/SAPlayer".
+    /// will be used.
     /// </summary>
     /// <param name="_ProjectName">Name of project <see cref="_ComponentName"/> belongs to.</param>
     /// <param name="_ComponentName">Name of component to log.</param>
@@ -87,10 +87,9 @@ public class LoggerBuilder
     }
     
     /// <summary>
-    /// Adjusts the log location to be specific to a standalone component. So for the component "Zipper", <c "_ComponentName"/>
-    /// would be "Zipper". So that log would look something like "/var/log/CerddoPod/Utils/Zipper-Log.md".
+    /// Adjusts the log location to be specific to a standalone component.
     /// MUST be used after either <see cref="UseDefaultLoc"/> or <see cref="SetLogLocation"/>, otherwise <see cref="UseDefaultLoc"/>
-    /// will be used. This will also be the name of the logger in <see cref="Loggers"/> (e.g. "CerddoPod/Utils/Zipper".
+    /// will be used.
     /// </summary>
     /// <param name="_ComponentName">Name of component to log.</param>
     /// <returns></returns>
@@ -99,9 +98,9 @@ public class LoggerBuilder
         if (_Logger.LogLocation.HasNoValue)
         { this.UseDefaultLoc(); }
         
-        _Logger.LogLocation = Maybe.From($"{_Logger.LogLocation.Value}{Separator}CerddoPod{Separator}Utils{Separator}{_ComponentName}-Log.md");
+        _Logger.LogName = $"{_ComponentName}";
         
-        _Logger.LogName = $"Utils/{_ComponentName}";
+        _Logger.LogLocation = Maybe.From($"{_Logger.LogLocation.Value}{Separator}{_Logger.LogName}-Log.md");
         
         return this;
     }
@@ -110,11 +109,11 @@ public class LoggerBuilder
     {
         if (_Logger.LogLocation.HasValue && _Logger.LogLocation.Value != String.Empty)
         {
-        if (!Directory.Exists(Path.GetDirectoryName(_Logger.LogLocation.Value)))
-        { Directory.CreateDirectory(Path.GetDirectoryName(_Logger.LogLocation.Value)!); }
-            
-        if (!File.Exists(_Logger.LogLocation.Value))
-        { File.Create(_Logger.LogLocation.Value).Close(); }
+            if (!Directory.Exists(Path.GetDirectoryName(_Logger.LogLocation.Value)))
+            { Directory.CreateDirectory(Path.GetDirectoryName(_Logger.LogLocation.Value)!); }
+                
+            if (!File.Exists(_Logger.LogLocation.Value))
+            { File.Create(_Logger.LogLocation.Value).Close(); }
         }
         _Logger.WriterThreadRun = false;
     }
